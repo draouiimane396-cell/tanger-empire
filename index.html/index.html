@@ -1,51 +1,77 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الفاتحون - إمبراطورية طنجة</title>
+<title>الفاتحون - طنجة 2.5D</title>
 <style>
 body{font-family:Arial;background:#0f172a;color:white;margin:0;padding:8px;text-align:center}
-.top{background:#1e293b;border-radius:15px;padding:10px;margin-bottom:8px;font-size:14px}
+.top{background:#1e293b;border-radius:15px;padding:10px;margin-bottom:8px;font-size:14px;line-height:1.8}
 .tabs{display:flex;gap:6px}
 .tabs button{flex:1;padding:14px;border:0;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer}
 .active{background:#facc15!important;color:black!important}
 .inactive{background:#334155;color:white}
-.card{background:#1e293b;border-radius:15px;padding:12px;margin:8px 0;text-align:right}
-.build{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:10px;border-radius:12px;margin:6px 0}
-button.up{background:#16a34a;color:white;border:0;padding:8px 12px;border-radius:10px;font-weight:bold}
-button.train{background:#dc2626;color:white;border:0;padding:8px 12px;border-radius:10px;font-weight:bold}
-canvas{background:#14532d;border-radius:15px;width:100%;max-width:520px}
-.small{font-size:12px;color:#94a3b8}
+.card{background:#1e293b;border-radius:16px;padding:12px;margin-top:10px;text-align:right}
+.btn{width:100%;padding:13px;border:0;border-radius:12px;font-weight:bold;font-size:16px;margin-top:8px;cursor:pointer}
+.gold{background:#facc15}.green{background:#22c55e;color:white}.red{background:#ef4444;color:white}.blue{background:#3b82f6;color:white}
+/* 2.5D MAP */
+.map-wrap{background:linear-gradient(#7ddf6a,#4caf50);border-radius:18px;padding:15px;margin-top:10px;overflow:hidden;border:4px solid #8b5a2b}
+.island{width:260px;height:260px;margin:20px auto;background:#8bc34a;transform:rotateX(55deg) rotateZ(45deg);border-radius:20px;box-shadow:0 20px 0 #2e7d32,0 30px 40px rgba(0,0,0,.5);position:relative;border:3px solid #689f38}
+.build{position:absolute;width:70px;height:70px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:38px;transform:rotateZ(-45deg) rotateX(-10deg);box-shadow:0 8px 0 rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.6)}
+.b1{top:30px;left:90px;background:linear-gradient(#fde68a,#f59e0b)}
+.b2{top:110px;left:30px;background:linear-gradient(#fca5a5,#dc2626)}
+.b3{top:110px;left:160px;background:linear-gradient(#93c5fd,#2563eb)}
+.b4{top:180px;left:95px;background:linear-gradient(#c4b5fd,#7c3aed)}
+.tree{position:absolute;font-size:28px}
+.stats{display:flex;gap:6px;margin-top:12px}
+.stats div{flex:1;background:white;color:black;border-radius:10px;padding:8px;font-weight:bold;font-size:13px}
 </style>
 </head>
 <body>
-<h2>👑 الفاتحون - طنجة</h2>
-<div class="top">💰 <b id="gold">800</b> | 🪵 <b id="wood">500</b> | 🌾 <b id="food">400</b> | 🪨 <b id="stone">200</b><br>⚔️ جيشك: <b id="army">20</b> قوة: <b id="power">100</b> | 🏆 <b id="msg">مرحبا بك أيها القائد!</b></div>
-<div class="tabs"><button id="btnCity" class="active" onclick="show('city')">🏰 مدينتي</button><button id="btnMap" class="inactive" onclick="show('map')">🗺️ خريطة العالم</button></div>
-<div id="cityView">
-<div class="card"><h3>🏰 مدينتك - طنجة</h3><p class="small">طور المباني باش يزيدو الموارد</p><div id="buildings"></div></div>
-<div class="card"><h3>⚔️ تجنيد الجيش</h3>
-<div class="build"><div><b>🥷 مشاة</b><br><span class="small">قوة 5 - 50 ذهب + 20 أكل</span></div><button class="train" onclick="train('inf')">تجنيد</button></div>
-<div class="build"><div><b>🐎 فارس</b><br><span class="small">قوة 15 - 150 ذهب + 50 أكل</span></div><button class="train" onclick="train('horse')">تجنيد</button></div>
-<div class="build"><div><b>🏹 رامي</b><br><span class="small">قوة 10 - 100 ذهب + 30 خشب</span></div><button class="train" onclick="train('archer')">تجنيد</button></div>
-</div></div>
-<div id="mapView" style="display:none"><div class="card"><h3>🗺️ خريطة العالم</h3><p class="small">كليكي على أي بلاصة باش تهجم ولا تجمع<br>🔴 مدينة عدو | 🟣 لصوص | 🟢 موارد</p></div><canvas id="map" width="520" height="360"></canvas></div>
+<div class="top">👑 <b>إمبراطورية طنجة - 2.5D</b><br>🏆 المستوى: <span id="lvl">5</span> | ⚔️ القوة: <span id="power">270</span><br>🪙 ذهب: <span id="gold">1250</span> | 🪵 خشب: <span id="wood">850</span> | 🌾 قمح: <span id="food">620</span></div>
+
+<div class="tabs">
+<button class="active" onclick="show('city',this)">🏰 مدينتي</button>
+<button class="inactive" onclick="show('army',this)">⚔️ الجيش</button>
+<button class="inactive" onclick="show('war',this)">🗺️ الحرب</button>
+</div>
+
+<div id="city">
+<div class="map-wrap">
+<div style="font-weight:bold;color:#1a3a0a">🌴 جزيرة طنجة - اضغط على البنايات</div>
+<div class="island">
+<div class="build b1" onclick="upgrade('palace')">🏰</div>
+<div class="build b2" onclick="upgrade('barracks')">⚔️</div>
+<div class="build b3" onclick="upgrade('farm')">🌾</div>
+<div class="build b4" onclick="upgrade('mine')">⛏️</div>
+<div class="tree" style="top:20px;left:20px">🌳</div>
+<div class="tree" style="top:200px;left:20px">🌴</div>
+<div class="tree" style="top:20px;left:200px">🌴</div>
+</div>
+<div class="stats"><div>🏰 قصر<br><span id="pLvl">مستوى 3</span></div><div>⚔️ ثكنة<br><span id="bLvl">مستوى 4</span></div><div>👥 جيش<br><span id="army">22</span></div></div>
+</div>
+<div class="card">🏰 <b>القصر</b> - مستوى 3<br>كيزيد الذهب كل دقيقة<br><button class="btn gold" onclick="upgrade('palace')">تطوير 🏰 - 300 ذهب</button></div>
+<div class="card">⚔️ <b>الثكنة</b> - مستوى 4<br>كيزيد الجنود<br><button class="btn green" onclick="upgrade('barracks')">تطوير ⚔️ - 250 ذهب</button></div>
+<button class="btn blue" onclick="collect()">💰 جمع الموارد +200</button>
+</div>
+
+<div id="army" style="display:none">
+<div class="card">👥 <b>جيشك: 22 جندي</b><br>⚔️ القوة: 270<br><br>🏇 فرسان طارق: 8<br>🏹 رماة: 7<br>🛡️ مشاة: 7<br><button class="btn green" onclick="train()">تدريب جندي جديد +1 ⚔️ - 50 ذهب</button></div>
+</div>
+
+<div id="war" style="display:none">
+<div class="card">🗺️ <b>الخريطة - هجم!</b><br><br>🏙️ سبتة - قوة 100<br><button class="btn red" onclick="attack('سبتة',100)">هجوم ⚔️</button><br><br>🏙️ فاس - قوة 180<br><button class="btn red" onclick="attack('فاس',180)">هجوم ⚔️</button><br><br>🏙️ الأندلس - قوة 350<br><button class="btn red" onclick="attack('الأندلس',350)">هجوم ⚔️</button></div>
+</div>
+
 <script>
-let R={gold:800,wood:500,food:400,stone:200};
-let army={inf:10,horse:5,archer:5};
-let B={castle:{name:'🏰 القصر',lvl:1,desc:'كيزيد كل الموارد'},barracks:{name:'⚔️ الثكنة',lvl:1,desc:'كيزيد قوة الجيش'},farm:{name:'🌾 المزرعة',lvl:1,desc:'كتعطي أكل'},mine:{name:'⛏️ المنجم',lvl:1,desc:'كيعطي ذهب'},wall:{name:'🧱 السور',lvl:1,desc:'كيحمي مدينتك'}};
-let spots=[{x:80,y:70,type:'enemy',name:'مدينة سبتة',power:80,reward:{gold:500,wood:200}},{x:380,y:80,type:'enemy',name:'مدينة العدو',power:150,reward:{gold:1000,stone:300}},{x:200,y:180,type:'thief',name:'عصابة اللصوص',power:40,reward:{gold:200,food:150}},{x:420,y:200,type:'thief',name:'لصوص الصحراء',power:60,reward:{gold:300,wood:150}},{x:100,y:280,type:'wood',name:'غابة',power:0,reward:{wood:200}},{x:300,y:300,type:'gold',name:'منجم ذهب',power:0,reward:{gold:300}},{x:260,y:90,type:'food',name:'مزرعة',power:0,reward:{food:250}}];
-function getPower(){return army.inf*5+army.horse*15+army.archer*10+B.barracks.lvl*20;}
-function getArmyCount(){return army.inf+army.horse+army.archer;}
-function render(){document.getElementById('gold').innerText=R.gold;document.getElementById('wood').innerText=R.wood;document.getElementById('food').innerText=R.food;document.getElementById('stone').innerText=R.stone;document.getElementById('army').innerText=getArmyCount();document.getElementById('power').innerText=getPower();let h='';for(let k in B){let b=B[k];let cost=200*b.lvl;h+=`<div class="build"><div><b>${b.name} - مستوى ${b.lvl}</b><br><span class="small">${b.desc}</span></div><button class="up" onclick="upgrade('${k}')">تطوير<br>${cost} ذهب</button></div>`;}document.getElementById('buildings').innerHTML=h;drawMap();}
-function upgrade(k){let cost=200*B[k].lvl;if(R.gold<cost) return alert('ما عندكش ذهب!');R.gold-=cost;B[k].lvl++;document.getElementById('msg').innerText=`طورتي ${B[k].name}! 🎉`;render();}
-function train(t){let costs={inf:{gold:50,food:20},horse:{gold:150,food:50},archer:{gold:100,wood:30}};let c=costs[t];if(R.gold<c.gold||R.food<(c.food||0)||R.wood<(c.wood||0)) return alert('موارد ناقصة!');R.gold-=c.gold;if(c.food)R.food-=c.food;if(c.wood)R.wood-=c.wood;army[t]++;document.getElementById('msg').innerText='جندتي جندي جديد! ⚔️';render();}
-function show(v){document.getElementById('cityView').style.display=v=='city'?'block':'none';document.getElementById('mapView').style.display=v=='map'?'block':'none';document.getElementById('btnCity').className=v=='city'?'active':'inactive';document.getElementById('btnMap').className=v=='map'?'active':'inactive';if(v=='map')drawMap();}
-function drawMap(){let cv=document.getElementById('map'),ctx=cv.getContext('2d');ctx.clearRect(0,0,520,360);ctx.fillStyle='#14532d';ctx.fillRect(0,0,520,360);ctx.font='42px Arial';ctx.fillText('🏰',240,195);ctx.fillStyle='white';ctx.font='bold 13px Arial';ctx.fillText('طنجة (أنت)',235,215);spots.forEach(s=>{let em=s.type=='enemy'?'🏯':s.type=='thief'?'🏴‍☠️':s.type=='wood'?'🌲':s.type=='gold'?'⛏️':'🌾';ctx.font='34px Arial';ctx.fillText(em,s.x-17,s.y+10);ctx.fillStyle='white';ctx.font='11px Arial';ctx.fillText(s.name,s.x-30,s.y+28);if(s.power>0)ctx.fillText('قوة: '+s.power,s.x-22,s.y+42);});}
-document.getElementById('map').addEventListener('click',e=>{let r=e.target.getBoundingClientRect();let px=(e.clientX-r.left)*(520/r.width),py=(e.clientY-r.top)*(360/r.height);let s=spots.find(s=>Math.hypot(px-s.x,py-s.y)<40);if(!s)return;if(s.type=='wood'||s.type=='gold'||s.type=='food'){R.gold+=s.reward.gold||0;R.wood+=s.reward.wood||0;R.food+=s.reward.food||0;document.getElementById('msg').innerText=`جمعتي من ${s.name}! 🎉`;render();return;}if(getPower()>=s.power){R.gold+=s.reward.gold||0;R.wood+=s.reward.wood||0;R.food+=s.reward.food||0;R.stone+=s.reward.stone||0;if(army.inf>0)army.inf=Math.max(0,army.inf-2);document.getElementById('msg').innerText=`ربحتي ضد ${s.name}! 🏆`;spots=spots.filter(x=>x!==s);}else{document.getElementById('msg').innerText=`خسرتي! قوتك ${getPower()} و العدو ${s.power} - طور جيشك! ❌`;if(army.inf>0)army.inf=Math.max(0,army.inf-1);}render();});
-setInterval(()=>{R.gold+=B.castle.lvl*10+B.mine.lvl*20;R.food+=B.farm.lvl*20+B.castle.lvl*5;R.wood+=B.castle.lvl*10;R.stone+=B.castle.lvl*5;render();},10000);
-render();
+let gold=1250, wood=850, food=620, army=22, power=270, palace=3, barracks=4;
+function show(id,btn){['city','army','war'].forEach(x=>document.getElementById(x).style.display='none');document.getElementById(id).style.display='block';document.querySelectorAll('.tabs button').forEach(b=>b.className='inactive');btn.className='active'}
+function up(){document.getElementById('gold').innerText=gold;document.getElementById('wood').innerText=wood;document.getElementById('food').innerText=food;document.getElementById('army').innerText=army;document.getElementById('power').innerText=power;document.getElementById('pLvl').innerText='مستوى '+palace;document.getElementById('bLvl').innerText='مستوى '+barracks}
+function upgrade(t){if(gold<250){alert('خاصك ذهب! جمع الموارد');return}gold-=250;if(t=='palace')palace++;else barracks++;power+=30;alert('مبروك! تم التطوير 🎉');up()}
+function collect(){gold+=200;wood+=100;food+=100;alert('جمعتي +200 ذهب 💰');up()}
+function train(){if(gold<50){alert('خاصك ذهب');return}gold-=50;army++;power+=12;alert('جندي جديد انضم! ⚔️');up()}
+function attack(city,enemyPower){if(power>enemyPower){gold+=300;alert('ربحتي '+city+'! +300 ذهب 🏆');}else{alert('خسرتي! قوي جيشك أولا 💪');}up()}
 </script>
 </body>
 </html>
