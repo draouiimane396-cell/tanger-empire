@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -15,15 +14,13 @@ body{font-family:Arial;background:#0f172a;color:white;margin:0;padding:8px;text-
 .card{background:#1e293b;border-radius:16px;padding:12px;margin-top:10px;text-align:right}
 .btn{width:100%;padding:13px;border:0;border-radius:12px;font-weight:bold;font-size:16px;margin-top:8px;cursor:pointer}
 .gold{background:#facc15}.green{background:#22c55e;color:white}.red{background:#ef4444;color:white}.blue{background:#3b82f6;color:white}
-/* 2.5D MAP */
-.map-wrap{background:linear-gradient(#7ddf6a,#4caf50);border-radius:18px;padding:15px;margin-top:10px;overflow:hidden;border:4px solid #8b5a2b}
+.map-wrap{background:linear-gradient(#7ddf6a,#4caf50);border-radius:18px;padding:15px;margin-top:10px;overflow:hidden;border:4px solid #8b5a2b;transition:all 1s}
 .island{width:260px;height:260px;margin:20px auto;background:#8bc34a;transform:rotateX(55deg) rotateZ(45deg);border-radius:20px;box-shadow:0 20px 0 #2e7d32,0 30px 40px rgba(0,0,0,.5);position:relative;border:3px solid #689f38}
 .build{position:absolute;width:70px;height:70px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:38px;transform:rotateZ(-45deg) rotateX(-10deg);box-shadow:0 8px 0 rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.6)}
 .b1{top:30px;left:90px;background:linear-gradient(#fde68a,#f59e0b)}
 .b2{top:110px;left:30px;background:linear-gradient(#fca5a5,#dc2626)}
 .b3{top:110px;left:160px;background:linear-gradient(#93c5fd,#2563eb)}
 .b4{top:180px;left:95px;background:linear-gradient(#c4b5fd,#7c3aed)}
-.tree{position:absolute;font-size:28px}
 .stats{display:flex;gap:6px;margin-top:12px}
 .stats div{flex:1;background:white;color:black;border-radius:10px;padding:8px;font-weight:bold;font-size:13px}
 </style>
@@ -38,22 +35,22 @@ body{font-family:Arial;background:#0f172a;color:white;margin:0;padding:8px;text-
 </div>
 
 <div id="city">
-<div class="map-wrap">
-<div style="font-weight:bold;color:#1a3a0a">🌴 جزيرة طنجة - اضغط على البنايات</div>
+<div class="map-wrap" id="mapWrap">
+<div style="font-weight:bold;color:#1a3a0a">🌴 جزيرة طنجة - الكاميرا كتبع الجيش</div>
 <div class="island">
 <div class="build b1" onclick="upgrade('palace')">🏰</div>
 <div class="build b2" onclick="upgrade('barracks')">⚔️</div>
 <div class="build b3" onclick="upgrade('farm')">🌾</div>
 <div class="build b4" onclick="upgrade('mine')">⛏️</div>
-<div class="tree" style="top:20px;left:20px">🌳</div>
-<div class="tree" style="top:200px;left:20px">🌴</div>
-<div class="tree" style="top:20px;left:200px">🌴</div>
+<div id="soldier" style="position:absolute;top:200px;left:100px;font-size:28px;z-index:10;transition:all 2s">🏇🏇🏇</div>
+<div id="enemy" style="position:absolute;top:35px;left:175px;font-size:28px;z-index:10">🏰🔥</div>
 </div>
 <div class="stats"><div>🏰 قصر<br><span id="pLvl">مستوى 3</span></div><div>⚔️ ثكنة<br><span id="bLvl">مستوى 4</span></div><div>👥 جيش<br><span id="army">22</span></div></div>
 </div>
 <div class="card">🏰 <b>القصر</b> - مستوى 3<br>كيزيد الذهب كل دقيقة<br><button class="btn gold" onclick="upgrade('palace')">تطوير 🏰 - 300 ذهب</button></div>
 <div class="card">⚔️ <b>الثكنة</b> - مستوى 4<br>كيزيد الجنود<br><button class="btn green" onclick="upgrade('barracks')">تطوير ⚔️ - 250 ذهب</button></div>
 <button class="btn blue" onclick="collect()">💰 جمع الموارد +200</button>
+<button onclick="attackCinematic()" style="width:100%;padding:15px;background:#ef4444;color:white;border:0;border-radius:15px;font-weight:bold;font-size:18px;margin-top:10px">🎬 هجوم سينمائي - الكاميرا تبع الجيش 📷</button>
 </div>
 
 <div id="army" style="display:none">
@@ -72,6 +69,16 @@ function upgrade(t){if(gold<250){alert('خاصك ذهب! جمع الموارد')
 function collect(){gold+=200;wood+=100;food+=100;alert('جمعتي +200 ذهب 💰');up()}
 function train(){if(gold<50){alert('خاصك ذهب');return}gold-=50;army++;power+=12;alert('جندي جديد انضم! ⚔️');up()}
 function attack(city,enemyPower){if(power>enemyPower){gold+=300;alert('ربحتي '+city+'! +300 ذهب 🏆');}else{alert('خسرتي! قوي جيشك أولا 💪');}up()}
+function attackCinematic(){
+  let s=document.getElementById('soldier');
+  let map=document.getElementById('mapWrap');
+  map.style.transform='scale(1.35)';
+  map.scrollIntoView({behavior:'smooth',block:'center'});
+  alert('🎬 الكاميرا كتبع الجيش... 🏇');
+  setTimeout(()=>{ s.style.top='60px'; s.style.left='165px'; },500);
+  setTimeout(()=>{ alert('💥 وصل الجيش! كيضرب العدو! ⚔️🔥'); s.innerText='⚔️💥'; },2600);
+  setTimeout(()=>{ s.style.top='200px'; s.style.left='100px'; s.innerText='🏇🏇🏇'; map.style.transform='scale(1)'; alert('🏆 ربحنا! الكاميرا رجعات للمدينة'); gold+=300; up(); },4600);
+}
 </script>
 </body>
 </html>
